@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "mcp__context7__resolve-library-id",
-      "mcp__context7__get-library-docs"
+      "mcp__context7__get-library-docs",
+      "Bash(python src/building_dataset.py)",
+      "Bash(.venv/bin/python -c \"\nimport mlflow\nmlflow.set_tracking_uri(''http://localhost:5000'')\n\nexp = mlflow.get_experiment(''1'')\nprint(f''Experiment ID: {exp.experiment_id}'')\nprint(f''Name: {exp.name}'')\nprint(f''Artifact Location: {exp.artifact_location}'')\nprint(f''Lifecycle Stage: {exp.lifecycle_stage}'')\nprint(f''Tags: {exp.tags}'')\n\")",
+      "Bash(.venv/bin/python:*)",
+      "Bash(.venv/bin/pip install:*)"
     ],
     "deny": [],
     "ask": []
