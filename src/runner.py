@@ -11,9 +11,6 @@ from data import itinery_database
 model_version: int | None = None
 model: dspy.Module | None = None
 
-dspy.BootstrapRS
-from dspy.evaluate import SemanticF1
-
 
 def load_model(version: int) -> None:
     global model_version, model
