@@ -1,0 +1,29 @@
+@startuml agent-loop-sequence
+!theme plain
+
+participant UI
+participant NGINX
+participant "Agent Service" as Agent
+participant Databricks
+participant "MCP Server" as MCP
+participant Rainbow
+
+UI -> NGINX : Request + Cookie
+NGINX -> Agent : Validated request
+
+loop Agent Loop
+    Agent -> Databricks : LLM inference (messages, tools)
+    Databricks --> Agent : Tool call decision
+
+    alt Tool call needed
+        Agent -> MCP : Execute tool + Cookie
+        MCP -> Rainbow : gRPC call + Cookie
+        Rainbow --> MCP : Response
+        MCP --> Agent : Tool result
+    end
+end
+
+Agent --> NGINX : Final response
+NGINX --> UI : Response
+
+@enduml

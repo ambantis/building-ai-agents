@@ -1,0 +1,12 @@
+@startuml token-exchange
+!theme plain
+
+rectangle "UI" as UI
+rectangle "Token Exchange Gateway" as Gateway
+rectangle "Downstream Service" as Service
+
+UI -right-> Gateway : Original Token
+Gateway -down-> Gateway : Validate with IdP
+Gateway -right-> Service : Exchanged Token
+
+@enduml

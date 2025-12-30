@@ -1,0 +1,64 @@
+@startuml TrainingPipeline
+!define LIGHTBLUE #E1F5FE
+!define PURPLE #F3E5F5
+!define ORANGE #FFF3E0
+!define GREEN #E8F5E9
+
+skinparam {
+    BackgroundColor<<UI>> LIGHTBLUE
+    BackgroundColor<<Training>> PURPLE
+    BackgroundColor<<Judge>> ORANGE
+    BackgroundColor<<LLM-as-Judge>> ORANGE
+    BackgroundColor<<Programmatic>> GREEN
+    BackgroundColor<<Metric>> GREEN
+    BorderColor #333333
+}
+
+actor SME
+
+component "MLflow UI" as UI <<UI>>
+
+component "(MLflow + DSPy + GEPA)" as SubjTraining <<Training>>
+
+package "LLM-as-Judge" {
+    [Time] as Time <<LLM-as-Judge>>
+    [Insights] as Insights <<LLM-as-Judge>>
+    [Completeness] as Complete <<LLM-as-Judge>>
+}
+
+package "Programmatic Judge" {
+    [Data] as DataJudge <<Metric>>
+    [Honesty] as HonestyJudge <<Metric>>
+}
+
+package "Judge Panel" as Panel {
+    component "Time" as TimePanel <<Judge>>
+    component "Insights" as InsightsPanel <<Judge>>
+    component "Completeness" as CompletePanel <<Judge>>
+    component "Data Judge" as Data <<Programmatic>>
+    component "Honesty Judge" as Honesty <<Programmatic>>
+}
+
+component "Forecast\nInference\n  Model" as Model
+
+SME --> UI : Label Traces
+UI --> SubjTraining : Labeling Session Done
+
+SubjTraining --> Time
+SubjTraining --> Insights
+SubjTraining --> Complete
+
+Time --> TimePanel
+Insights --> InsightsPanel
+Complete --> CompletePanel
+
+DataJudge --> Data
+HonestyJudge --> Honesty
+
+TimePanel -[hidden]right-> InsightsPanel
+InsightsPanel -[hidden]right-> CompletePanel
+CompletePanel -[hidden]right-> Data
+Data -[hidden]right-> Honesty
+
+Panel -right-> Model : Train Model (GEPA)
+@enduml

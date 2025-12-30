@@ -1,0 +1,24 @@
+@startuml recommended-approach
+!theme plain
+
+rectangle "UI" as UI
+rectangle "NGINX Ingress" as NGINX
+rectangle "Agent Service" as Agent
+rectangle "MCP Server" as MCP
+rectangle "Rainbow gRPC" as Rainbow
+rectangle "Databricks Model Serving" as Databricks
+
+UI -right-> NGINX : Cookie with JWT
+NGINX -down-> Agent
+Agent -down-> MCP : Cookie
+MCP -down-> Rainbow : Cookie
+Agent <-right-> Databricks : LLM inference only
+
+package "K8s Cluster" {
+    NGINX
+    Agent
+    MCP
+    Rainbow
+}
+
+@enduml

@@ -1,0 +1,19 @@
+@startuml proposed-agentic-flow
+!theme plain
+left to right direction
+
+rectangle "UI" as UI
+rectangle "Databricks Model Serving" as Databricks
+rectangle "MCP Server" as MCP
+
+package "K8s Cluster" {
+    rectangle "NGINX Ingress" as NGINX
+    rectangle "Rainbow gRPC" as Rainbow
+}
+
+UI -right-> Databricks : Cookie + X-Partner-ID
+Databricks -right-> MCP
+MCP -right-> NGINX : "??? needs Cookie"
+NGINX -down-> Rainbow
+
+@enduml

@@ -1,0 +1,33 @@
+@startuml Inference
+!define LIGHTBLUE #E1F5FE
+!define PURPLE #F3E5F5
+!define ORANGE #FFF3E0
+
+skinparam component {
+    BackgroundColor<<K8s>> PURPLE
+    BackgroundColor<<UI>> LIGHTBLUE
+    BackgroundColor<<Databricks>> ORANGE
+    BorderColor #333333
+}
+
+package "Databricks" as Databricks {
+    Database "  Unity\nCatalog" as UC
+    Database S3
+}
+
+package "Kubernetes" as K8s {
+    [Forecast Agent] as Agent
+    [Forecast MCP] as MCP
+    [Forecast gRPC] as gRPC
+
+    Agent -right- MCP
+    MCP -right- gRPC
+}
+
+component "Frontend UI" as UI
+
+UC -down-> Agent : Load Model
+Agent -up-> S3 : AI Traces
+UI -up- Agent
+
+@enduml

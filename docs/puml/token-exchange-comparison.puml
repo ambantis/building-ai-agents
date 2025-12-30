@@ -1,0 +1,19 @@
+@startuml token-exchange-comparison
+!theme plain
+
+package "Token Exchange Solves" {
+    rectangle "Different audiences" as A
+    rectangle "Scope reduction" as B
+    rectangle "Cross-domain trust" as C
+}
+
+package "Our Actual Problem" {
+    rectangle "Cookie cannot pass through Databricks" as D
+    rectangle "Model serving lacks header forwarding" as E
+}
+
+A ..> D : Not applicable
+B ..> D : Not applicable
+C ..> E : Not applicable
+
+@enduml

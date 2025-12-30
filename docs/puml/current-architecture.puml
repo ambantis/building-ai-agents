@@ -1,0 +1,18 @@
+@startuml current-architecture
+!theme plain
+left to right direction
+
+rectangle "UI" as UI
+
+package "K8s Cluster" {
+    rectangle "NGINX Ingress" as NGINX
+    rectangle "Ads Manager HTTP" as AdsManager
+    rectangle "Rainbow gRPC" as Rainbow
+
+    NGINX -down-> AdsManager
+    NGINX -down-> Rainbow
+}
+
+UI -right-> NGINX : Cookie with JWT
+
+@enduml
