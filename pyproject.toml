@@ -20,3 +20,14 @@ dev = [
     "bedrock-agentcore-starter-toolkit>=0.2.5",
     "ipython>=9.5.0",
 ]
+
+[tool.pyright]
+exclude = [
+    ".venv",
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "**/node_modules"
+]
+include = ["src", "main.py"]
+venvPath = "."
+venv = ".venv"
