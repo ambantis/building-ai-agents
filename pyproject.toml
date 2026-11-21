@@ -3,31 +3,65 @@ name = "building-ai-agents"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.15,<3.16"
 dependencies = [
     "argparse>=1.4.0",
-    "dspy>=3.0.3",
-    "mlflow[databricks]>=3.6.0",
-    "pip>=25.2",
-    "pydantic>=2.11.9",
-    "python-dotenv>=1.1.1",
-    "rich>=14.1.0",
+    "dspy>=3.5.0,<4.0.0",
+    "mlflow[databricks]>=3.18.0,<4.0.0",
+    "pydantic>=2.14.4",
+    "python-dotenv>=1.2.4",
+    "rich>=15.0.0",
 ]
 
 [dependency-groups]
 dev = [
-    "bedrock-agentcore>=1.1.1",
-    "bedrock-agentcore-starter-toolkit>=0.2.5",
-    "ipython>=9.5.0",
+    "bedrock-agentcore>=1.27.0",
+    "bedrock-agentcore-starter-toolkit>=0.3.14",
+    "ipython>=9.18.1",
+    "ruff>=0.17.6",
+    "ty>=0.0.107",
 ]
 
-[tool.pyright]
-exclude = [
+[tool.ruff]
+target-version = "py315"
+line-length = 88
+extend-exclude = [
     ".venv",
     "**/__pycache__",
     "**/.pytest_cache",
-    "**/node_modules"
+    "**/node_modules",
+]
+
+[tool.ruff.lint]
+select = [
+    "E4",   # pycodestyle: imports and logical lines
+    "E7",   # pycodestyle: statements
+    "E9",   # pycodestyle: runtime errors
+    "F",    # Pyflakes: correctness
+    "I",    # isort: import order
+    "N",    # PEP 8 naming
+    "UP",   # pyupgrade: modern Python and type syntax
+    "ANN",  # type annotations
+    "ASYNC", # async correctness
+    "B",    # bugbear: likely bugs
+    "A",    # builtin shadowing
+    "C4",   # comprehensions
+    "DTZ",  # timezone-aware datetimes
+    "PTH",  # pathlib best practices
+    "RET",  # return statements
+    "SIM",  # simplification
+    "TC",   # type-checking imports
+    "RUF",  # Ruff-specific correctness checks
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ty.src]
+exclude = [
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "**/node_modules",
 ]
 include = ["src", "main.py"]
-venvPath = "."
-venv = ".venv"

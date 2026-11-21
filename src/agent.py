@@ -19,16 +19,16 @@ ML_FLOW_URI = "http://localhost:5000"
 
 
 class CustomerServiceRequest(dspy.Signature):
-    """You are an airline customer service agent that helps user book and manage flights.
+    """You are an airline customer service agent that helps users book and manage flights.
 
-    You are given a list of tools to handle user request, and you should decide on
-    the right tool to user to fulfil users' request."""
+    You are given a list of tools to handle user requests. Decide which tools to use
+    to fulfill each request."""
 
     user_request: str = dspy.InputField()
     process_result: str = dspy.OutputField(
         desc=(
-            "Message that summarizes the process result, and the information users need",
-            "e.g., the confirmation_number if a new flight is booked.",
+            "Message that summarizes the process result and the information users need, "
+            "e.g., the confirmation_number if a new flight is booked."
         )
     )
 

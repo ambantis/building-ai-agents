@@ -13,7 +13,7 @@ def fetch_flight_info(date: Date, origin: str, destination: str) -> list[Flight]
     """Fetch flight information from origin to destination on the given date"""
     flights: list[Flight] = []
 
-    for flight_id, flight in flight_database.items():
+    for flight in flight_database.values():
         if (
             flight.date_time.year == date.year
             and flight.date_time.month == date.month
@@ -34,7 +34,7 @@ def fetch_itinerary(confirmation_number: str) -> Itinerary | None:
 
 
 @mlflow.trace(span_type=SpanType.TOOL)
-def pick_flight(flights: list[Flight]):
+def pick_flight(flights: list[Flight]) -> Flight:
     """Pick up the best flight that matches users' request. We pick the shortest, and cheaper one on ties."""
     sorted_flights = sorted(
         flights,
@@ -46,13 +46,13 @@ def pick_flight(flights: list[Flight]):
     return sorted_flights[0]
 
 
-def _generate_id(length=8) -> str:
+def _generate_id(length: int = 8) -> str:
     chars = string.ascii_lowercase + string.digits
     return "".join(random.choices(chars, k=length))
 
 
 @mlflow.trace(span_type=SpanType.TOOL)
-def book_flight(flight: Flight, user_profile: UserProfile):
+def book_flight(flight: Flight, user_profile: UserProfile) -> tuple[str, Itinerary]:
     """Book a flight on behalf of the user."""
     print(f"itinerary database size={len(itinery_database)}")
     confirmation_number: str = _generate_id()
@@ -68,7 +68,7 @@ def book_flight(flight: Flight, user_profile: UserProfile):
 
 
 @mlflow.trace(span_type=SpanType.TOOL)
-def cancel_itinerary(confirmation_number: str, user_profile: UserProfile):
+def cancel_itinerary(confirmation_number: str, user_profile: UserProfile) -> None:
     """Cancel an itinerary on behalf of the user."""
     if confirmation_number in itinery_database:
         del itinery_database[confirmation_number]

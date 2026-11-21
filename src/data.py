@@ -1,4 +1,4 @@
-from models import Date, UserProfile, Flight, Itinerary, Ticket
+from models import Date, Flight, Itinerary, Ticket, UserProfile
 
 user_database = {
     "Adam": UserProfile(user_id="1", name="Adam", email="adam@gmail.com"),
