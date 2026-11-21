@@ -4,9 +4,24 @@
 
 This project demonstrates building a customer service agent using DSPy's ReAct framework with MLflow tracking and model versioning.
 
+### Requirements and Setup
+
+The project uses Python 3.15, DSPy 3.5, and MLflow 3.18. Install the locked
+dependencies with:
+
+```bash
+uv sync --group dev
+```
+
+Copy `.env.example` to `.env` and set `OPENAI_API_KEY`. Start an MLflow server on
+port 5000 before running the agent.
+
 ### Agent Architecture
 
 The main agent is defined in [src/agent.py](src/agent.py) as a `dspy.ReAct` module created via the `new_agent()` function. It uses the `CustomerServiceRequest` signature and processes natural language requests using available tools to fulfill customer service tasks.
+
+DSPy 3.5 uses structured ReAct history and a typed `submit` tool. Results contain
+`history` and `termination_reason`; the old `trajectory` representation is not used.
 
 ### Agent Tools
 
@@ -43,22 +58,39 @@ Defined in [src/models.py](src/models.py) using Pydantic:
 - Model name: "AirlineReActAgent"
 - Auto-logging enabled for DSPy components
 - Model versioning and loading capabilities
+- New models use DSPy's built-in save format through `use_dspy_model_save=True`
+
+Models created with DSPy 3.4 or earlier are not compatible with the DSPy 3.5
+ReAct state. Run the optimizer again and use the new registered model version.
 
 ### Running the Agent
 
 #### Optimizer ([src/optimizer.py](src/optimizer.py))
-Trains and logs the agent model:
+Runs a request and logs the agent model:
 ```bash
-python src/optimizer.py
+uv run src/optimizer.py
 ```
-Books a flight from SFO to JFK for user "Adam" and logs the model to MLflow with the signature.
+Books a flight from SFO to JFK for user "Bob" and logs the model to MLflow with the signature.
 
 #### Runner ([src/runner.py](src/runner.py))
 Loads a specific model version and runs inference:
 ```bash
-python src/runner.py --name Bob --version 1
+uv run src/runner.py --name Bob --version 1
 ```
 - `--name`: Traveler name (default: "Bob")
 - `--version`: Model version to load (default: 1)
 
 Loads the specified model version from MLflow and books a flight from SFO to JFK for the specified user.
+
+### Development Checks
+
+Run the linter, formatter check, and type checker before committing changes:
+
+```bash
+uv run ruff check .
+uv run ruff format --check .
+uv run ty check
+```
+
+Format the code with `uv run ruff format .`. Use Conventional Commits for commit
+messages.
