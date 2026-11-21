@@ -6,8 +6,8 @@ This project demonstrates building a customer service agent using DSPy's ReAct f
 
 ### Requirements and Setup
 
-The project uses Python 3.15, DSPy 3.5, and MLflow 3.18. Install the locked
-dependencies with:
+The project uses Python 3.15, DSPy 3.5, MLflow 3.18, and FastAPI 0.165.
+Gradio 6.32 is a development-only test client. Install the locked dependencies with:
 
 ```bash
 uv sync --group dev
@@ -61,7 +61,8 @@ Defined in [src/models.py](src/models.py) using Pydantic:
 - New models use DSPy's built-in save format through `use_dspy_model_save=True`
 
 Models created with DSPy 3.4 or earlier are not compatible with the DSPy 3.5
-ReAct state. Run the optimizer again and use the new registered model version.
+ReAct state. Run the optimizer again and set `MODEL_VERSION` to the new registered
+model version.
 
 ### Running the Agent
 
@@ -72,15 +73,24 @@ uv run src/optimizer.py
 ```
 Books a flight from SFO to JFK for user "Bob" and logs the model to MLflow with the signature.
 
-#### Runner ([src/runner.py](src/runner.py))
-Loads a specific model version and runs inference:
-```bash
-uv run src/runner.py --name Bob --version 1
-```
-- `--name`: Traveler name (default: "Bob")
-- `--version`: Model version to load (default: 1)
+#### HTTP server ([src/server.py](src/server.py))
+Loads the model version set by `MODEL_VERSION` (default: 1) during startup:
 
-Loads the specified model version from MLflow and books a flight from SFO to JFK for the specified user.
+```bash
+MODEL_VERSION=1 uv run src/server.py
+```
+
+The FastAPI endpoint is `POST /v1/travel-requests`. Interactive API documentation
+is available at `/docs`, and the health check is `/health`.
+
+The service code is in [src/service.py](src/service.py). It accepts a validated
+`TravelRequest` from [src/schemas.py](src/schemas.py). FastAPI does not import or
+mount Gradio.
+
+For development testing, run `uv run dev/agent_client.py` while FastAPI is
+running. The standalone Gradio client sends requests to the FastAPI endpoint, so
+Pydantic performs all request validation. Its browser UI listens on port 7860 by
+default. Set `API_BASE_URL` to the FastAPI address.
 
 ### Development Checks
 
@@ -90,6 +100,7 @@ Run the linter, formatter check, and type checker before committing changes:
 uv run ruff check .
 uv run ruff format --check .
 uv run ty check
+uv run pytest
 ```
 
 Format the code with `uv run ruff format .`. Use Conventional Commits for commit
